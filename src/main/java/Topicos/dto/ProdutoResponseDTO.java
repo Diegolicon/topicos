@@ -1,21 +1,28 @@
 package Topicos.dto;
 
-public class ProdutoSimplicadoResponseDTO {
+public class ProdutoResponseDTO {
     public Long id;
     public String nome;
+    public String descricao;
     public Double preco;
     public Integer estoque;
     public String marca;
+    public Long criadoEm;
+    public Long atualizadoEm;
 
-    public ProdutoSimplicadoResponseDTO() {
+    public ProdutoResponseDTO() {
     }
 
-    public ProdutoSimplicadoResponseDTO(Long id, String nome, Double preco, Integer estoque, String marca) {
+    public ProdutoResponseDTO(Long id, String nome, String descricao, Double preco, Integer estoque, 
+                             String marca, Long criadoEm, Long atualizadoEm) {
         this.id = id;
         this.nome = nome;
+        this.descricao = descricao;
         this.preco = preco;
         this.estoque = estoque;
         this.marca = marca;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
     }
 
     public Long getId() {
@@ -32,6 +39,14 @@ public class ProdutoSimplicadoResponseDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public Double getPreco() {
@@ -56,6 +71,22 @@ public class ProdutoSimplicadoResponseDTO {
 
     public void setMarca(String marca) {
         this.marca = marca;
+    }
+
+    public Long getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(Long criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public Long getAtualizadoEm() {
+        return atualizadoEm;
+    }
+
+    public void setAtualizadoEm(Long atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
     }
 }
 

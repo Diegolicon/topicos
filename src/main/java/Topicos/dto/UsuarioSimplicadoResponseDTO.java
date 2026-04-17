@@ -48,3 +48,4 @@ public class UsuarioSimplicadoResponseDTO {
         this.telefone = telefone;
     }
 }
+

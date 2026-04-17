@@ -4,12 +4,12 @@ public class UsuarioRequestDTO {
     public String nome;
     public String email;
     public String telefone;
-    public String endereco;
+    public EnderecoRequestDTO endereco;
 
     public UsuarioRequestDTO() {
     }
 
-    public UsuarioRequestDTO(String nome, String email, String telefone, String endereco) {
+    public UsuarioRequestDTO(String nome, String email, String telefone, EnderecoRequestDTO endereco) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
@@ -40,11 +40,12 @@ public class UsuarioRequestDTO {
         this.telefone = telefone;
     }
 
-    public String getEndereco() {
+    public EnderecoRequestDTO getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(String endereco) {
+    public void setEndereco(EnderecoRequestDTO endereco) {
         this.endereco = endereco;
     }
 }
+

@@ -1,26 +1,35 @@
 package Topicos.resource;
 
-import Topicos.dto.UsuarioRequestDTO;
-import Topicos.dto.UsuarioResponseDTO;
-import Topicos.service.UsuarioService;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-@Path("/api/usuarios")
+import Topicos.dto.EnderecoRequestDTO;
+import Topicos.dto.EnderecoResponseDTO;
+import Topicos.service.EnderecoService;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+@Path("/api/enderecos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class UsuarioResource {
+public class EnderecoResource {
 
     @Inject
-    UsuarioService usuarioService;
+    EnderecoService enderecoService;
 
     @POST
-    public Response criar(UsuarioRequestDTO dto) {
+    public Response criar(EnderecoRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.criar(dto);
+            EnderecoResponseDTO response = enderecoService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -30,16 +39,16 @@ public class UsuarioResource {
 
     @GET
     public Response obterTodos() {
-        List<UsuarioResponseDTO> usuarios = usuarioService.obterTodos();
-        return Response.ok(usuarios).build();
+        List<EnderecoResponseDTO> enderecos = enderecoService.obterTodos();
+        return Response.ok(enderecos).build();
     }
 
     @GET
     @Path("/{id}")
     public Response obterPorId(@PathParam("id") Long id) {
         try {
-            UsuarioResponseDTO usuario = usuarioService.obterPorId(id);
-            return Response.ok(usuario).build();
+            EnderecoResponseDTO endereco = enderecoService.obterPorId(id);
+            return Response.ok(endereco).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorResponse(e.getMessage())).build();
@@ -47,17 +56,17 @@ public class UsuarioResource {
     }
 
     @GET
-    @Path("/buscar/nome")
-    public Response buscarPorNome(@QueryParam("nome") String nome) {
-        List<UsuarioResponseDTO> usuarios = usuarioService.buscarPorNome(nome);
-        return Response.ok(usuarios).build();
+    @Path("/buscar/cep")
+    public Response buscarPorCep(@QueryParam("cep") String cep) {
+        List<EnderecoResponseDTO> enderecos = enderecoService.buscarPorCep(cep);
+        return Response.ok(enderecos).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, UsuarioRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, EnderecoRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.atualizar(id, dto);
+            EnderecoResponseDTO response = enderecoService.atualizar(id, dto);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -69,7 +78,7 @@ public class UsuarioResource {
     @Path("/{id}")
     public Response deletar(@PathParam("id") Long id) {
         try {
-            usuarioService.deletar(id);
+            enderecoService.deletar(id);
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)

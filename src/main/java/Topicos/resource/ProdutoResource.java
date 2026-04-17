@@ -1,26 +1,26 @@
 package Topicos.resource;
 
-import Topicos.dto.UsuarioRequestDTO;
-import Topicos.dto.UsuarioResponseDTO;
-import Topicos.service.UsuarioService;
+import Topicos.dto.ProdutoRequestDTO;
+import Topicos.dto.ProdutoResponseDTO;
+import Topicos.service.ProdutoService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-@Path("/api/usuarios")
+@Path("/api/produtos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class UsuarioResource {
+public class ProdutoResource {
 
     @Inject
-    UsuarioService usuarioService;
+    ProdutoService produtoService;
 
     @POST
-    public Response criar(UsuarioRequestDTO dto) {
+    public Response criar(ProdutoRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.criar(dto);
+            ProdutoResponseDTO response = produtoService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -30,16 +30,16 @@ public class UsuarioResource {
 
     @GET
     public Response obterTodos() {
-        List<UsuarioResponseDTO> usuarios = usuarioService.obterTodos();
-        return Response.ok(usuarios).build();
+        List<ProdutoResponseDTO> produtos = produtoService.obterTodos();
+        return Response.ok(produtos).build();
     }
 
     @GET
     @Path("/{id}")
     public Response obterPorId(@PathParam("id") Long id) {
         try {
-            UsuarioResponseDTO usuario = usuarioService.obterPorId(id);
-            return Response.ok(usuario).build();
+            ProdutoResponseDTO produto = produtoService.obterPorId(id);
+            return Response.ok(produto).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorResponse(e.getMessage())).build();
@@ -49,15 +49,22 @@ public class UsuarioResource {
     @GET
     @Path("/buscar/nome")
     public Response buscarPorNome(@QueryParam("nome") String nome) {
-        List<UsuarioResponseDTO> usuarios = usuarioService.buscarPorNome(nome);
-        return Response.ok(usuarios).build();
+        List<ProdutoResponseDTO> produtos = produtoService.buscarPorNome(nome);
+        return Response.ok(produtos).build();
+    }
+
+    @GET
+    @Path("/com-estoque")
+    public Response obterComEstoque() {
+        List<ProdutoResponseDTO> produtos = produtoService.obterComEstoque();
+        return Response.ok(produtos).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, UsuarioRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, ProdutoRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.atualizar(id, dto);
+            ProdutoResponseDTO response = produtoService.atualizar(id, dto);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -69,7 +76,7 @@ public class UsuarioResource {
     @Path("/{id}")
     public Response deletar(@PathParam("id") Long id) {
         try {
-            usuarioService.deletar(id);
+            produtoService.deletar(id);
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)

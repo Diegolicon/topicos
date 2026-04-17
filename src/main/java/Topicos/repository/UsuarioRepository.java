@@ -17,3 +17,4 @@ public class UsuarioRepository implements PanacheRepository<Usuario> {
         return find("nome like ?1", "%" + nome + "%").list();
     }
 }
+

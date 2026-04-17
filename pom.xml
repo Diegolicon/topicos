@@ -17,7 +17,17 @@
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
     </properties>
 
-   
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>${quarkus.platform.artifact-id}</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
          <dependency>
@@ -35,10 +45,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-hibernateorm-panache</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

@@ -1,26 +1,26 @@
 package Topicos.resource;
 
-import Topicos.dto.UsuarioRequestDTO;
-import Topicos.dto.UsuarioResponseDTO;
-import Topicos.service.UsuarioService;
+import Topicos.dto.ArmaAirsoftRequestDTO;
+import Topicos.dto.ArmaAirsoftResponseDTO;
+import Topicos.service.ArmaAirsoftService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-@Path("/api/usuarios")
+@Path("/api/armas-airsoft")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class UsuarioResource {
+public class ArmaAirsoftResource {
 
     @Inject
-    UsuarioService usuarioService;
+    ArmaAirsoftService armaAirsoftService;
 
     @POST
-    public Response criar(UsuarioRequestDTO dto) {
+    public Response criar(ArmaAirsoftRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.criar(dto);
+            ArmaAirsoftResponseDTO response = armaAirsoftService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -30,16 +30,16 @@ public class UsuarioResource {
 
     @GET
     public Response obterTodos() {
-        List<UsuarioResponseDTO> usuarios = usuarioService.obterTodos();
-        return Response.ok(usuarios).build();
+        List<ArmaAirsoftResponseDTO> armas = armaAirsoftService.obterTodos();
+        return Response.ok(armas).build();
     }
 
     @GET
     @Path("/{id}")
     public Response obterPorId(@PathParam("id") Long id) {
         try {
-            UsuarioResponseDTO usuario = usuarioService.obterPorId(id);
-            return Response.ok(usuario).build();
+            ArmaAirsoftResponseDTO arma = armaAirsoftService.obterPorId(id);
+            return Response.ok(arma).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorResponse(e.getMessage())).build();
@@ -49,15 +49,22 @@ public class UsuarioResource {
     @GET
     @Path("/buscar/nome")
     public Response buscarPorNome(@QueryParam("nome") String nome) {
-        List<UsuarioResponseDTO> usuarios = usuarioService.buscarPorNome(nome);
-        return Response.ok(usuarios).build();
+        List<ArmaAirsoftResponseDTO> armas = armaAirsoftService.buscarPorNome(nome);
+        return Response.ok(armas).build();
+    }
+
+    @GET
+    @Path("/buscar/modelo")
+    public Response buscarPorModelo(@QueryParam("modelo") String modelo) {
+        List<ArmaAirsoftResponseDTO> armas = armaAirsoftService.buscarPorModelo(modelo);
+        return Response.ok(armas).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, UsuarioRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, ArmaAirsoftRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.atualizar(id, dto);
+            ArmaAirsoftResponseDTO response = armaAirsoftService.atualizar(id, dto);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -69,7 +76,7 @@ public class UsuarioResource {
     @Path("/{id}")
     public Response deletar(@PathParam("id") Long id) {
         try {
-            usuarioService.deletar(id);
+            armaAirsoftService.deletar(id);
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)

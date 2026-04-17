@@ -1,26 +1,27 @@
 package Topicos.resource;
 
-import Topicos.dto.UsuarioRequestDTO;
-import Topicos.dto.UsuarioResponseDTO;
-import Topicos.service.UsuarioService;
+import Topicos.dto.VendaRequestDTO;
+import Topicos.dto.VendaResponseDTO;
+import Topicos.model.Venda;
+import Topicos.service.VendaService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-@Path("/api/usuarios")
+@Path("/api/vendas")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class UsuarioResource {
+public class VendaResource {
 
     @Inject
-    UsuarioService usuarioService;
+    VendaService vendaService;
 
     @POST
-    public Response criar(UsuarioRequestDTO dto) {
+    public Response criar(VendaRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.criar(dto);
+            VendaResponseDTO response = vendaService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -30,16 +31,16 @@ public class UsuarioResource {
 
     @GET
     public Response obterTodos() {
-        List<UsuarioResponseDTO> usuarios = usuarioService.obterTodos();
-        return Response.ok(usuarios).build();
+        List<VendaResponseDTO> vendas = vendaService.obterTodos();
+        return Response.ok(vendas).build();
     }
 
     @GET
     @Path("/{id}")
     public Response obterPorId(@PathParam("id") Long id) {
         try {
-            UsuarioResponseDTO usuario = usuarioService.obterPorId(id);
-            return Response.ok(usuario).build();
+            VendaResponseDTO venda = vendaService.obterPorId(id);
+            return Response.ok(venda).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorResponse(e.getMessage())).build();
@@ -47,17 +48,36 @@ public class UsuarioResource {
     }
 
     @GET
-    @Path("/buscar/nome")
-    public Response buscarPorNome(@QueryParam("nome") String nome) {
-        List<UsuarioResponseDTO> usuarios = usuarioService.buscarPorNome(nome);
-        return Response.ok(usuarios).build();
+    @Path("/usuario/{usuarioId}")
+    public Response obterPorUsuario(@PathParam("usuarioId") Long usuarioId) {
+        List<VendaResponseDTO> vendas = vendaService.obterPorUsuario(usuarioId);
+        return Response.ok(vendas).build();
+    }
+
+    @GET
+    @Path("/status/{status}")
+    public Response obterPorStatus(@PathParam("status") Venda.StatusVenda status) {
+        List<VendaResponseDTO> vendas = vendaService.obterPorStatus(status);
+        return Response.ok(vendas).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, UsuarioRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, VendaRequestDTO dto) {
         try {
-            UsuarioResponseDTO response = usuarioService.atualizar(id, dto);
+            VendaResponseDTO response = vendaService.atualizar(id, dto);
+            return Response.ok(response).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+    @PUT
+    @Path("/{id}/status")
+    public Response atualizarStatus(@PathParam("id") Long id, @QueryParam("status") Venda.StatusVenda novoStatus) {
+        try {
+            VendaResponseDTO response = vendaService.atualizarStatus(id, novoStatus);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -69,7 +89,7 @@ public class UsuarioResource {
     @Path("/{id}")
     public Response deletar(@PathParam("id") Long id) {
         try {
-            usuarioService.deletar(id);
+            vendaService.deletar(id);
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)

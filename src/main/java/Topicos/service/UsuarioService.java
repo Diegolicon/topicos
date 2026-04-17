@@ -13,3 +13,4 @@ public interface UsuarioService {
     List<UsuarioResponseDTO> buscarPorNome(String nome);
     void deletar(Long id);
 }
+

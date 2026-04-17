@@ -5,14 +5,14 @@ public class UsuarioResponseDTO {
     public String nome;
     public String email;
     public String telefone;
-    public String endereco;
+    public EnderecoResponseDTO endereco;
     public Long criadoEm;
     public Long atualizadoEm;
 
     public UsuarioResponseDTO() {
     }
 
-    public UsuarioResponseDTO(Long id, String nome, String email, String telefone, String endereco, 
+    public UsuarioResponseDTO(Long id, String nome, String email, String telefone, EnderecoResponseDTO endereco, 
                              Long criadoEm, Long atualizadoEm) {
         this.id = id;
         this.nome = nome;
@@ -55,11 +55,11 @@ public class UsuarioResponseDTO {
         this.telefone = telefone;
     }
 
-    public String getEndereco() {
+    public EnderecoResponseDTO getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(String endereco) {
+    public void setEndereco(EnderecoResponseDTO endereco) {
         this.endereco = endereco;
     }
 
@@ -79,3 +79,4 @@ public class UsuarioResponseDTO {
         this.atualizadoEm = atualizadoEm;
     }
 }
+
