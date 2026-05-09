@@ -2,10 +2,14 @@ package Topicos.dto;
 
 import Topicos.dto.UsuarioSimplicadoResponseDTO;
 import Topicos.model.Venda;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public class VendaRequestDTO {
+    @NotNull(message = "ID do usuário é obrigatório")
     public Long usuarioId;
+    @NotEmpty(message = "Itens da venda são obrigatórios")
     public List<ItemVendaRequestDTO> itens;
     public String observacoes;
 

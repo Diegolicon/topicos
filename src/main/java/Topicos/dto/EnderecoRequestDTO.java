@@ -1,10 +1,17 @@
 package Topicos.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class EnderecoRequestDTO {
+    @NotBlank(message = "Rua é obrigatória")
     public String rua;
+    @NotBlank(message = "Número é obrigatório")
     public String numero;
+    @NotBlank(message = "Cidade é obrigatória")
     public String cidade;
+    @NotBlank(message = "Estado é obrigatório")
     public String estado;
+    @NotBlank(message = "CEP é obrigatório")
     public String cep;
     public String complemento;
 

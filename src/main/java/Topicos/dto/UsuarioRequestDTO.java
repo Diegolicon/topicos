@@ -1,9 +1,20 @@
 package Topicos.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class UsuarioRequestDTO {
+    @NotBlank(message = "Nome é obrigatório")
     public String nome;
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ser válido")
     public String email;
+    @NotBlank(message = "Telefone é obrigatório")
     public String telefone;
+    @NotNull(message = "Endereço é obrigatório")
+    @Valid
     public EnderecoRequestDTO endereco;
 
     public UsuarioRequestDTO() {

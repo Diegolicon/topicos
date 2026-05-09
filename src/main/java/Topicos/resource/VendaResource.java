@@ -5,6 +5,7 @@ import Topicos.dto.VendaResponseDTO;
 import Topicos.model.Venda;
 import Topicos.service.VendaService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -19,7 +20,7 @@ public class VendaResource {
     VendaService vendaService;
 
     @POST
-    public Response criar(VendaRequestDTO dto) {
+    public Response criar(@Valid VendaRequestDTO dto) {
         try {
             VendaResponseDTO response = vendaService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
@@ -63,7 +64,7 @@ public class VendaResource {
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, VendaRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, @Valid VendaRequestDTO dto) {
         try {
             VendaResponseDTO response = vendaService.atualizar(id, dto);
             return Response.ok(response).build();

@@ -1,8 +1,16 @@
 package Topicos.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public class ItemVendaRequestDTO {
+    @NotNull(message = "ID do produto é obrigatório")
     public Long produtoId;
+    @NotNull(message = "Quantidade é obrigatória")
+    @Min(value = 1, message = "Quantidade deve ser maior que 0")
     public Integer quantidade;
+    @NotNull(message = "Preço unitário é obrigatório")
+    @Min(value = 0, message = "Preço unitário deve ser maior ou igual a 0")
     public Double precoUnitario;
 
     public ItemVendaRequestDTO() {

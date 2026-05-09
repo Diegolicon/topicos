@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "produtos")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo_produto", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("PRODUTO")
 public class Produto extends DefaultEntity {
 
     @Column(nullable = false, length = 100)

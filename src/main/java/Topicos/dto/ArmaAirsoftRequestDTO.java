@@ -1,16 +1,27 @@
 package Topicos.dto;
 
 import Topicos.model.TipoPropulsao;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class ArmaAirsoftRequestDTO {
+    @NotBlank(message = "Nome é obrigatório")
     public String nome;
     public String descricao;
+    @NotNull(message = "Preço é obrigatório")
+    @Min(value = 0, message = "Preço deve ser maior ou igual a 0")
     public Double preco;
+    @NotNull(message = "Estoque é obrigatório")
+    @Min(value = 0, message = "Estoque deve ser maior ou igual a 0")
     public Integer estoque;
     public String marca;
+    @NotNull(message = "Tipo de propulsão é obrigatório")
     public TipoPropulsao tipoPropulsao;
     public String modelo;
+    @Min(value = 0, message = "Velocidade deve ser maior ou igual a 0")
     public Double velocidadeEscopeta;
+    @Min(value = 0, message = "Alcance deve ser maior ou igual a 0")
     public Double alcanceEfetivo;
 
     public ArmaAirsoftRequestDTO() {

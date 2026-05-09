@@ -6,15 +6,8 @@ import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
 import Topicos.service.EnderecoService;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -27,7 +20,7 @@ public class EnderecoResource {
     EnderecoService enderecoService;
 
     @POST
-    public Response criar(EnderecoRequestDTO dto) {
+    public Response criar(@Valid EnderecoRequestDTO dto) {
         try {
             EnderecoResponseDTO response = enderecoService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
@@ -64,7 +57,7 @@ public class EnderecoResource {
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, EnderecoRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, @Valid EnderecoRequestDTO dto) {
         try {
             EnderecoResponseDTO response = enderecoService.atualizar(id, dto);
             return Response.ok(response).build();

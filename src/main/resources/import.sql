@@ -6,13 +6,15 @@ INSERT INTO usuarios (id, nome, email, telefone, endereco_id) VALUES
   (1, 'Carlos Silva', 'carlos.silva@example.com', '11987654321', 1),
   (2, 'Mariana Oliveira', 'mariana.oliveira@example.com', '21999988877', 2);
 
-INSERT INTO produtos (id, nome, descricao, preco, estoque, marca, tipo_produto) VALUES
-  (1, 'Munição BB 0.20g', 'Bolinha de plástico para treino', 49.90, 120, 'AirTec', 'Produto'),
-  (2, 'Bateria 9.6V', 'Bateria recarregável para AEG', 129.90, 35, 'PowerMax', 'Produto');
+INSERT INTO produtos (id, nome, descricao, preco, estoque, marca, TIPO_PRODUTO) VALUES
+  (1, 'Munição BB 0.20g', 'Bolinha de plástico para treino', 49.90, 120, 'AirTec', 'PRODUTO'),
+  (2, 'Bateria 9.6V', 'Bateria recarregável para AEG', 129.90, 35, 'PowerMax', 'PRODUTO'),
+  (3, 'Rifle AEG Tático', 'Rifle elétrico full metal', 1599.90, 8, 'Viper', 'ARMA_AIRSOFT'),
+  (4, 'Pistola GBB Compact', 'Pistola gas blow back', 899.90, 5, 'Strike', 'ARMA_AIRSOFT');
 
-INSERT INTO produtos (id, nome, descricao, preco, estoque, marca, tipo_produto, tipo_propulsao, modelo, velocidade_escopeta, alcance_efetivo) VALUES
-  (3, 'Rifle AEG Tático', 'Rifle elétrico full metal', 1599.90, 8, 'Viper', 'ARMA_AIRSOFT', 'Viper X9', 'AEG', 120.0, 45.0),
-  (4, 'Pistola GBB Compact', 'Pistola gas blow back', 899.90, 5, 'Strike', 'ARMA_AIRSOFT', 'Strike P45', 'GBB', 95.0, 25.0);
+INSERT INTO armas_airsoft (id, TIPO_PROPULSAO, MODELO, VELOCIDADE_ESCOPETA, ALCANCE_EFETIVO) VALUES
+  (3, 'AEG', 'Viper X9', 120.0, 45.0),
+  (4, 'GBB', 'Strike P45', 95.0, 25.0);
 
 INSERT INTO vendas (id, usuario_id, total_venda, status, observacoes) VALUES
   (1, 1, 249.79, 'PENDENTE', 'Retirar na loja física.');

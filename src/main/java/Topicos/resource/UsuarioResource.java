@@ -4,6 +4,7 @@ import Topicos.dto.UsuarioRequestDTO;
 import Topicos.dto.UsuarioResponseDTO;
 import Topicos.service.UsuarioService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -18,7 +19,7 @@ public class UsuarioResource {
     UsuarioService usuarioService;
 
     @POST
-    public Response criar(UsuarioRequestDTO dto) {
+    public Response criar(@Valid UsuarioRequestDTO dto) {
         try {
             UsuarioResponseDTO response = usuarioService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
@@ -55,7 +56,7 @@ public class UsuarioResource {
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, UsuarioRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, @Valid UsuarioRequestDTO dto) {
         try {
             UsuarioResponseDTO response = usuarioService.atualizar(id, dto);
             return Response.ok(response).build();

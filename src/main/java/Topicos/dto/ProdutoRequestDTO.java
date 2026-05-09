@@ -1,9 +1,18 @@
 package Topicos.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class ProdutoRequestDTO {
+    @NotBlank(message = "Nome é obrigatório")
     public String nome;
     public String descricao;
+    @NotNull(message = "Preço é obrigatório")
+    @Min(value = 0, message = "Preço deve ser maior ou igual a 0")
     public Double preco;
+    @NotNull(message = "Estoque é obrigatório")
+    @Min(value = 0, message = "Estoque deve ser maior ou igual a 0")
     public Integer estoque;
     public String marca;
 

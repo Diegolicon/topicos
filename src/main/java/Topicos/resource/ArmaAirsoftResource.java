@@ -4,6 +4,7 @@ import Topicos.dto.ArmaAirsoftRequestDTO;
 import Topicos.dto.ArmaAirsoftResponseDTO;
 import Topicos.service.ArmaAirsoftService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -18,7 +19,7 @@ public class ArmaAirsoftResource {
     ArmaAirsoftService armaAirsoftService;
 
     @POST
-    public Response criar(ArmaAirsoftRequestDTO dto) {
+    public Response criar(@Valid ArmaAirsoftRequestDTO dto) {
         try {
             ArmaAirsoftResponseDTO response = armaAirsoftService.criar(dto);
             return Response.status(Response.Status.CREATED).entity(response).build();
@@ -62,7 +63,7 @@ public class ArmaAirsoftResource {
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") Long id, ArmaAirsoftRequestDTO dto) {
+    public Response atualizar(@PathParam("id") Long id, @Valid ArmaAirsoftRequestDTO dto) {
         try {
             ArmaAirsoftResponseDTO response = armaAirsoftService.atualizar(id, dto);
             return Response.ok(response).build();
