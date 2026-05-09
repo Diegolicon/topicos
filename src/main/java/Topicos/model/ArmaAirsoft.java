@@ -3,20 +3,21 @@ package Topicos.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "armas_airsoft")
 @DiscriminatorValue("ARMA_AIRSOFT")
 public class ArmaAirsoft extends Produto {
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "tipo_propulsao", nullable = false)
     private TipoPropulsao tipoPropulsao;
 
     @Column(length = 50)
     private String modelo;
 
-    @Column
+    @Column(name = "velocidade_escopeta")
     private Double velocidadeEscopeta;
 
-    @Column
+    @Column(name = "alcance_efetivo")
     private Double alcanceEfetivo;
 
     public ArmaAirsoft() {

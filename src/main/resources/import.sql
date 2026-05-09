@@ -1,10 +1,12 @@
 INSERT INTO enderecos (id, rua, numero, cidade, estado, cep, complemento) VALUES
   (1, 'Rua A', '123', 'São Paulo', 'SP', '01000-000', 'Apto 101'),
-  (2, 'Av. B', '456', 'Rio de Janeiro', 'RJ', '22000-000', 'Casa');
+  (2, 'Av. B', '456', 'Rio de Janeiro', 'RJ', '22000-000', 'Casa'),
+  (3, 'Rua do Diego', '789', 'Palmas', 'TO', '77000-000', 'Qtd 10');
 
-INSERT INTO usuarios (id, nome, email, telefone, endereco_id) VALUES
-  (1, 'Carlos Silva', 'carlos.silva@example.com', '11987654321', 1),
-  (2, 'Mariana Oliveira', 'mariana.oliveira@example.com', '21999988877', 2);
+INSERT INTO usuarios (id, nome, email, telefone, senha, endereco_id) VALUES
+  (1, 'Carlos Silva', 'carlos.silva@example.com', '11987654321', '123', 1),
+  (2, 'Mariana Oliveira', 'mariana.oliveira@example.com', '21999988877', '456', 2),
+  (3, 'Diego Admin', 'diego@teste.com', '12345678', '123', 3);
 
 INSERT INTO produtos (id, nome, descricao, preco, estoque, marca, TIPO_PRODUTO) VALUES
   (1, 'Munição BB 0.20g', 'Bolinha de plástico para treino', 49.90, 120, 'AirTec', 'PRODUTO'),

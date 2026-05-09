@@ -8,17 +8,23 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import java.util.List;
+
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 
 @Path("/api/armas-airsoft")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class ArmaAirsoftResource {
 
     @Inject
     ArmaAirsoftService armaAirsoftService;
 
     @POST
+    @RolesAllowed("Admin")
     public Response criar(@Valid ArmaAirsoftRequestDTO dto) {
         try {
             ArmaAirsoftResponseDTO response = armaAirsoftService.criar(dto);

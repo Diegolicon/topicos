@@ -21,6 +21,9 @@ public class Usuario extends DefaultEntity {
     @Column(nullable = false, length = 20)
     private String telefone;
 
+    @Column(nullable = false)
+    private String senha;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
@@ -28,13 +31,15 @@ public class Usuario extends DefaultEntity {
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String telefone, Endereco endereco) {
+    public Usuario(String nome, String email, String telefone, String senha, Endereco endereco) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
+        this.senha = senha;
         this.endereco = endereco;
     }
 
+    // Getters e Setters
     public String getNome() {
         return nome;
     }
@@ -59,6 +64,14 @@ public class Usuario extends DefaultEntity {
         this.telefone = telefone;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
     public Endereco getEndereco() {
         return endereco;
     }
@@ -67,4 +80,3 @@ public class Usuario extends DefaultEntity {
         this.endereco = endereco;
     }
 }
-

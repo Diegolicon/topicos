@@ -23,7 +23,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO criar(UsuarioRequestDTO dto) {
-        Usuario usuario = new Usuario(dto.getNome(), dto.getEmail(), dto.getTelefone(), toEndereco(dto.getEndereco()));
+        Usuario usuario = new Usuario(dto.getNome(), dto.getEmail(), dto.getTelefone(), dto.getSenha(), toEndereco(dto.getEndereco()));
         usuarioRepository.persist(usuario);
         return toResponseDTO(usuario);
     }

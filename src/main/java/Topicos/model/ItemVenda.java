@@ -18,7 +18,7 @@ public class ItemVenda extends DefaultEntity {
     @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(nullable = false)
+    @Column(name = "preco_unitario", nullable = false)
     private Double precoUnitario;
 
     public ItemVenda() {

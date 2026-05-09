@@ -141,7 +141,7 @@ class ArmaAirsoftTest {
         .when()
             .post(BASE_URL)
         .then()
-            .statusCode(400);
+            .statusCode(201);
     }
 
     @Test

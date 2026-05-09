@@ -17,7 +17,7 @@ public class Venda extends DefaultEntity {
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ItemVenda> itens = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(name = "total_venda", nullable = false)
     private Double totalVenda;
 
     @Column(nullable = false, length = 20)
