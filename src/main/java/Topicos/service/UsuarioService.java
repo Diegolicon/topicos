@@ -2,7 +2,6 @@ package Topicos.service;
 
 import Topicos.dto.UsuarioRequestDTO;
 import Topicos.dto.UsuarioResponseDTO;
-import Topicos.model.Usuario;
 import java.util.List;
 
 public interface UsuarioService {
@@ -12,5 +11,8 @@ public interface UsuarioService {
     List<UsuarioResponseDTO> obterTodos();
     List<UsuarioResponseDTO> buscarPorNome(String nome);
     void deletar(Long id);
+    UsuarioResponseDTO alterarSenha(Long id, String senhaAtual, String novaSenha);
+    void enviarRecuperacaoSenha(String email);
+    void recuperarSenha(String token, String novaSenha);
 }
 

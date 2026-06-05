@@ -6,6 +6,8 @@ public class ProdutoSimplicadoResponseDTO {
     public Double preco;
     public Integer estoque;
     public String marca;
+    public String foto;
+    public String categoria;
 
     public ProdutoSimplicadoResponseDTO() {
     }
@@ -16,6 +18,16 @@ public class ProdutoSimplicadoResponseDTO {
         this.preco = preco;
         this.estoque = estoque;
         this.marca = marca;
+    }
+
+    public ProdutoSimplicadoResponseDTO(Long id, String nome, Double preco, Integer estoque, String marca, String foto, String categoria) {
+        this.id = id;
+        this.nome = nome;
+        this.preco = preco;
+        this.estoque = estoque;
+        this.marca = marca;
+        this.foto = foto;
+        this.categoria = categoria;
     }
 
     public Long getId() {
@@ -56,6 +68,22 @@ public class ProdutoSimplicadoResponseDTO {
 
     public void setMarca(String marca) {
         this.marca = marca;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }
 

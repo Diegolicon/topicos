@@ -1,6 +1,7 @@
 package Topicos.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import Topicos.dto.EnderecoRequestDTO;
@@ -14,8 +15,10 @@ import Topicos.service.UsuarioService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
+@Transactional
 public class UsuarioServiceImpl implements UsuarioService {
 
     @Inject
@@ -74,6 +77,52 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
         }
         usuarioRepository.delete(usuario);
+    }
+
+    @Override
+    public UsuarioResponseDTO alterarSenha(Long id, String senhaAtual, String novaSenha) {
+        Usuario usuario = usuarioRepository.findById(id);
+        if (usuario == null) {
+            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+        }
+        
+        // Validar senha atual (em produção, usar BCrypt ou similar)
+        if (!usuario.getSenha().equals(senhaAtual)) {
+            throw new RuntimeException("Senha atual incorreta");
+        }
+        
+        if (novaSenha == null || novaSenha.trim().isEmpty()) {
+            throw new RuntimeException("Nova senha não pode estar vazia");
+        }
+        
+        usuario.setSenha(novaSenha);
+        usuarioRepository.persist(usuario);
+        return toResponseDTO(usuario);
+    }
+
+    @Override
+    public void enviarRecuperacaoSenha(String email) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
+            // Por segurança, não informar se o email existe ou não
+            throw new RuntimeException("Email não encontrado ou inválido");
+        }
+        
+        // Implementar lógica para enviar email com token
+        // Exemplo: gerar token, salvar em banco/cache com expiração, enviar email
+        System.out.println("Email de recuperação enviado para: " + email);
+    }
+
+    @Override
+    public void recuperarSenha(String token, String novaSenha) {
+        // Implementar lógica para validar token e recuperar usuário
+        // Exemplo: buscar token no cache/banco, validar expiração, buscar usuário
+        if (novaSenha == null || novaSenha.trim().isEmpty()) {
+            throw new RuntimeException("Nova senha não pode estar vazia");
+        }
+        
+        // Placeholder - substituir com lógica real
+        throw new RuntimeException("Token inválido ou expirado");
     }
 
     private UsuarioResponseDTO toResponseDTO(Usuario usuario) {

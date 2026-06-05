@@ -1,7 +1,5 @@
 package Topicos.model;
 
-import Topicos.model.DefaultEntity;
-import Topicos.model.Usuario;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

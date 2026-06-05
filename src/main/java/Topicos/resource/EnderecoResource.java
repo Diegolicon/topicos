@@ -5,13 +5,12 @@ import java.util.List;
 import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
 import Topicos.service.EnderecoService;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import io.quarkus.security.Authenticated;
 
 @Path("/api/enderecos")
 @Produces(MediaType.APPLICATION_JSON)

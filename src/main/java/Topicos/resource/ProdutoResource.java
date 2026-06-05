@@ -1,16 +1,25 @@
 package Topicos.resource;
 
+import java.util.List;
+
 import Topicos.dto.ProdutoRequestDTO;
 import Topicos.dto.ProdutoResponseDTO;
 import Topicos.service.ProdutoService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
-
-import io.quarkus.security.Authenticated;
 
 @Path("/api/produtos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +42,7 @@ public class ProdutoResource {
     }
 
     @GET
+    @PermitAll
     public Response obterTodos() {
         List<ProdutoResponseDTO> produtos = produtoService.obterTodos();
         return Response.ok(produtos).build();
@@ -40,6 +50,7 @@ public class ProdutoResource {
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public Response obterPorId(@PathParam("id") Long id) {
         try {
             ProdutoResponseDTO produto = produtoService.obterPorId(id);
@@ -52,6 +63,7 @@ public class ProdutoResource {
 
     @GET
     @Path("/buscar/nome")
+    @PermitAll
     public Response buscarPorNome(@QueryParam("nome") String nome) {
         List<ProdutoResponseDTO> produtos = produtoService.buscarPorNome(nome);
         return Response.ok(produtos).build();
@@ -59,6 +71,7 @@ public class ProdutoResource {
 
     @GET
     @Path("/com-estoque")
+    @PermitAll
     public Response obterComEstoque() {
         List<ProdutoResponseDTO> produtos = produtoService.obterComEstoque();
         return Response.ok(produtos).build();

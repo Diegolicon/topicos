@@ -11,7 +11,6 @@ import Topicos.model.ItemVenda;
 import Topicos.model.Produto;
 import Topicos.model.Venda;
 import Topicos.repository.UsuarioRepository;
-import Topicos.repository.ItemVendaRepository;
 import Topicos.repository.ProdutoRepository;
 import Topicos.repository.VendaRepository;
 import Topicos.service.VendaService;
@@ -32,9 +31,6 @@ public class VendaServiceImpl implements VendaService {
 
     @Inject
     ProdutoRepository produtoRepository;
-
-    @Inject
-    ItemVendaRepository itemVendaRepository;
 
     @Override
     public VendaResponseDTO criar(VendaRequestDTO dto) {

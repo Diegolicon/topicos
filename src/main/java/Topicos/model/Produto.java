@@ -1,6 +1,5 @@
 package Topicos.model;
 
-import Topicos.model.DefaultEntity;
 import jakarta.persistence.*;
 
 @Entity

@@ -1,17 +1,25 @@
 package Topicos.resource;
 
+import java.util.List;
+
 import Topicos.dto.VendaRequestDTO;
 import Topicos.dto.VendaResponseDTO;
 import Topicos.model.Venda;
 import Topicos.service.VendaService;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
-
-import io.quarkus.security.Authenticated;
 
 @Path("/api/vendas")
 @Produces(MediaType.APPLICATION_JSON)
@@ -57,6 +65,7 @@ public class VendaResource {
         List<VendaResponseDTO> vendas = vendaService.obterPorUsuario(usuarioId);
         return Response.ok(vendas).build();
     }
+
 
     @GET
     @Path("/status/{status}")

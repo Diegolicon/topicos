@@ -1,16 +1,25 @@
 package Topicos.resource;
 
+import java.util.List;
+
 import Topicos.dto.UsuarioRequestDTO;
 import Topicos.dto.UsuarioResponseDTO;
 import Topicos.service.UsuarioService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
-
-import io.quarkus.security.Authenticated;
 
 @Path("/api/usuarios")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,6 +31,7 @@ public class UsuarioResource {
     UsuarioService usuarioService;
 
     @POST
+    @PermitAll
     public Response criar(@Valid UsuarioRequestDTO dto) {
         try {
             UsuarioResponseDTO response = usuarioService.criar(dto);
@@ -77,6 +87,47 @@ public class UsuarioResource {
             return Response.noContent().build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+    @PUT
+    @Path("/{id}/alterar-senha")
+    public Response alterarSenha(@PathParam("id") Long id, 
+            @QueryParam("senhaAtual") String senhaAtual,
+            @QueryParam("novaSenha") String novaSenha) {
+        try {
+            // Validar se o usuário está tentando alterar sua própria senha
+            UsuarioResponseDTO response = usuarioService.alterarSenha(id, senhaAtual, novaSenha);
+            return Response.ok(response).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+    @POST
+    @Path("/esqueceu-senha")
+    @PermitAll
+    public Response esqueceuSenha(@QueryParam("email") String email) {
+        try {
+            usuarioService.enviarRecuperacaoSenha(email);
+            return Response.ok(new ErrorResponse("Email de recuperação enviado")).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+    @POST
+    @Path("/recuperar-senha")
+    @PermitAll
+    public Response recuperarSenha(@QueryParam("token") String token, @QueryParam("novaSenha") String novaSenha) {
+        try {
+            usuarioService.recuperarSenha(token, novaSenha);
+            return Response.ok(new ErrorResponse("Senha alterada com sucesso")).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
