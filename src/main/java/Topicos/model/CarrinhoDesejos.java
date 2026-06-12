@@ -6,6 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "carrinho_desejos",
@@ -20,12 +21,16 @@ public class CarrinhoDesejos extends DefaultEntity {
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
+    @Column(nullable = false)
+    private Integer quantidade = 1;
+
     public CarrinhoDesejos() {
     }
 
-    public CarrinhoDesejos(Usuario usuario, Produto produto) {
+    public CarrinhoDesejos(Usuario usuario, Produto produto, Integer quantidade) {
         this.usuario = usuario;
         this.produto = produto;
+        this.quantidade = quantidade;
     }
 
     public Usuario getUsuario() {
@@ -42,5 +47,13 @@ public class CarrinhoDesejos extends DefaultEntity {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
     }
 }

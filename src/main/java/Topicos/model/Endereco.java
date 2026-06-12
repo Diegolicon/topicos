@@ -2,6 +2,9 @@ package Topicos.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,6 +28,10 @@ public class Endereco extends DefaultEntity {
 
     @Column(length = 200)
     private String complemento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     public Endereco() {
     }
@@ -84,6 +91,14 @@ public class Endereco extends DefaultEntity {
 
     public void setComplemento(String complemento) {
         this.complemento = complemento;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
 

@@ -5,9 +5,10 @@ import java.util.stream.Collectors;
 
 import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
-import Topicos.model.ArmaAirsoft;
 import Topicos.model.Endereco;
+import Topicos.model.Usuario;
 import Topicos.repository.EnderecoRepository;
+import Topicos.repository.UsuarioRepository;
 import Topicos.service.EnderecoService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -20,6 +21,9 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Inject
     EnderecoRepository enderecoRepository;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
 
     @Override
     public EnderecoResponseDTO criar(EnderecoRequestDTO dto) {
@@ -75,6 +79,52 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
+    public EnderecoResponseDTO criarParaUsuario(String emailUsuario, EnderecoRequestDTO dto) {
+        Usuario usuario = obterUsuarioPorEmail(emailUsuario);
+        Endereco endereco = new Endereco(
+                dto.getRua(),
+                dto.getNumero(),
+                dto.getCidade(),
+                dto.getEstado(),
+                dto.getCep(),
+                dto.getComplemento()
+        );
+        endereco.setUsuario(usuario);
+        enderecoRepository.persist(endereco);
+        return toResponseDTO(endereco);
+    }
+
+    @Override
+    public List<EnderecoResponseDTO> obterPorUsuario(String emailUsuario) {
+        Usuario usuario = obterUsuarioPorEmail(emailUsuario);
+        return enderecoRepository.findByUsuario(usuario.id).stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public EnderecoResponseDTO atualizarDoUsuario(String emailUsuario, Long enderecoId, EnderecoRequestDTO dto) {
+        Usuario usuario = obterUsuarioPorEmail(emailUsuario);
+        Endereco endereco = obterEnderecoDoUsuario(usuario.id, enderecoId);
+        endereco.setRua(dto.getRua());
+        endereco.setNumero(dto.getNumero());
+        endereco.setCidade(dto.getCidade());
+        endereco.setEstado(dto.getEstado());
+        endereco.setCep(dto.getCep());
+        endereco.setComplemento(dto.getComplemento());
+        enderecoRepository.persist(endereco);
+        return toResponseDTO(endereco);
+    }
+
+    @Override
+    public void deletarDoUsuario(String emailUsuario, Long enderecoId) {
+        Usuario usuario = obterUsuarioPorEmail(emailUsuario);
+        Endereco endereco = obterEnderecoDoUsuario(usuario.id, enderecoId);
+        endereco.setAtivo(false);
+        enderecoRepository.persist(endereco);
+    }
+
+    @Override
     public void deletar(Long id) {
         Endereco endereco = enderecoRepository.findById(id);
         if (endereco == null) {
@@ -96,6 +146,22 @@ public class EnderecoServiceImpl implements EnderecoService {
                 endereco.getCriadoEm(),
                 endereco.getAtualizadoEm()
         );
+    }
+
+    private Usuario obterUsuarioPorEmail(String emailUsuario) {
+        return usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario autenticado nao encontrado"));
+    }
+
+    private Endereco obterEnderecoDoUsuario(Long usuarioId, Long enderecoId) {
+        Endereco endereco = enderecoRepository.findById(enderecoId);
+        if (endereco == null || !Boolean.TRUE.equals(endereco.getAtivo())) {
+            throw new EntityNotFoundException("Endereco nao encontrado com ID: " + enderecoId);
+        }
+        if (endereco.getUsuario() == null || !endereco.getUsuario().id.equals(usuarioId)) {
+            throw new EntityNotFoundException("Endereco nao encontrado para o usuario autenticado");
+        }
+        return endereco;
     }
 }
 

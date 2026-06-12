@@ -2,6 +2,7 @@ package Topicos.service.impl;
 
 import Topicos.dto.ProdutoSimplicadoResponseDTO;
 import Topicos.dto.UsuarioSimplicadoResponseDTO;
+import Topicos.dto.EnderecoResponseDTO;
 import Topicos.dto.ItemVendaRequestDTO;
 import Topicos.dto.ItemVendaResponseDTO;
 import Topicos.dto.VendaRequestDTO;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class VendaServiceImpl implements VendaService {
 
+    private static final String CHAVE_PIX = "63984352575";
+
     @Inject
     VendaRepository vendaRepository;
 
@@ -43,6 +46,8 @@ public class VendaServiceImpl implements VendaService {
         }
 
         Venda venda = new Venda(usuario);
+        venda.setFormaPagamento(Venda.FormaPagamento.PIX);
+        venda.setChavePix(CHAVE_PIX);
         venda.setObservacoes(dto.getObservacoes());
         
         for (ItemVendaRequestDTO itemDTO : dto.getItens()) {
@@ -144,7 +149,7 @@ public class VendaServiceImpl implements VendaService {
                 .map(this::itemToResponseDTO)
                 .collect(Collectors.toList());
 
-        return new VendaResponseDTO(
+        VendaResponseDTO response = new VendaResponseDTO(
                 venda.id,
                 usuarioDTO,
                 itensDTO,
@@ -154,6 +159,10 @@ public class VendaServiceImpl implements VendaService {
                 venda.getCriadoEm(),
                 venda.getAtualizadoEm()
         );
+        response.setEnderecoEntrega(toEnderecoResponseDTO(venda.getEnderecoEntrega()));
+        response.setFormaPagamento(venda.getFormaPagamento());
+        response.setChavePix(venda.getChavePix());
+        return response;
     }
 
     private ItemVendaResponseDTO itemToResponseDTO(ItemVenda item) {
@@ -174,6 +183,23 @@ public class VendaServiceImpl implements VendaService {
                 item.getSubtotal(),
                 item.getCriadoEm(),
                 item.getAtualizadoEm()
+        );
+    }
+
+    private EnderecoResponseDTO toEnderecoResponseDTO(Topicos.model.Endereco endereco) {
+        if (endereco == null) {
+            return null;
+        }
+        return new EnderecoResponseDTO(
+                endereco.id,
+                endereco.getRua(),
+                endereco.getNumero(),
+                endereco.getCidade(),
+                endereco.getEstado(),
+                endereco.getCep(),
+                endereco.getComplemento(),
+                endereco.getCriadoEm(),
+                endereco.getAtualizadoEm()
         );
     }
 }

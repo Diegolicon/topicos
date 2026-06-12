@@ -1,6 +1,15 @@
 package Topicos.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +34,29 @@ public class Venda extends DefaultEntity {
     @Column(length = 200)
     private String observacoes;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco_entrega_id")
+    private Endereco enderecoEntrega;
+
+    @Column(name = "forma_pagamento", length = 20)
+    @Enumerated(EnumType.STRING)
+    private FormaPagamento formaPagamento;
+
+    @Column(name = "chave_pix", length = 100)
+    private String chavePix;
+
     public enum StatusVenda {
-        PENDENTE, PROCESSANDO, CONCLUÍDA, CANCELADA
+        PENDENTE, PROCESSANDO, CONCLUIDA, CONCLUÍDA, CANCELADA
+    }
+
+    public enum FormaPagamento {
+        PIX
     }
 
     public Venda() {
         this.status = StatusVenda.PENDENTE;
         this.totalVenda = 0.0;
+        this.formaPagamento = FormaPagamento.PIX;
     }
 
     public Venda(Usuario usuario) {
@@ -95,5 +120,28 @@ public class Venda extends DefaultEntity {
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
     }
-}
 
+    public Endereco getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public void setEnderecoEntrega(Endereco enderecoEntrega) {
+        this.enderecoEntrega = enderecoEntrega;
+    }
+
+    public FormaPagamento getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(FormaPagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
+
+    public String getChavePix() {
+        return chavePix;
+    }
+
+    public void setChavePix(String chavePix) {
+        this.chavePix = chavePix;
+    }
+}

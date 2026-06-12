@@ -11,6 +11,9 @@ public class VendaResponseDTO {
     public Double totalVenda;
     public Venda.StatusVenda status;
     public String observacoes;
+    public EnderecoResponseDTO enderecoEntrega;
+    public Venda.FormaPagamento formaPagamento;
+    public String chavePix;
     public Long criadoEm;
     public Long atualizadoEm;
 
@@ -76,6 +79,30 @@ public class VendaResponseDTO {
 
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
+    }
+
+    public EnderecoResponseDTO getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public void setEnderecoEntrega(EnderecoResponseDTO enderecoEntrega) {
+        this.enderecoEntrega = enderecoEntrega;
+    }
+
+    public Venda.FormaPagamento getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(Venda.FormaPagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
+
+    public String getChavePix() {
+        return chavePix;
+    }
+
+    public void setChavePix(String chavePix) {
+        this.chavePix = chavePix;
     }
 
     public Long getCriadoEm() {

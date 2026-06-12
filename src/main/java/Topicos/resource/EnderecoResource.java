@@ -10,8 +10,10 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/api/enderecos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -56,6 +58,54 @@ public class EnderecoResource {
     public Response buscarPorCep(@QueryParam("cep") String cep) {
         List<EnderecoResponseDTO> enderecos = enderecoService.buscarPorCep(cep);
         return Response.ok(enderecos).build();
+    }
+
+    @POST
+    @Path("/me")
+    public Response criarMeuEndereco(@Context SecurityContext securityContext, @Valid EnderecoRequestDTO dto) {
+        try {
+            EnderecoResponseDTO response = enderecoService.criarParaUsuario(
+                    securityContext.getUserPrincipal().getName(), dto);
+            return Response.status(Response.Status.CREATED).entity(response).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("/me")
+    public Response obterMeusEnderecos(@Context SecurityContext securityContext) {
+        List<EnderecoResponseDTO> enderecos = enderecoService.obterPorUsuario(
+                securityContext.getUserPrincipal().getName());
+        return Response.ok(enderecos).build();
+    }
+
+    @PUT
+    @Path("/me/{id}")
+    public Response atualizarMeuEndereco(@Context SecurityContext securityContext,
+            @PathParam("id") Long id,
+            @Valid EnderecoRequestDTO dto) {
+        try {
+            EnderecoResponseDTO response = enderecoService.atualizarDoUsuario(
+                    securityContext.getUserPrincipal().getName(), id, dto);
+            return Response.ok(response).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+    @DELETE
+    @Path("/me/{id}")
+    public Response deletarMeuEndereco(@Context SecurityContext securityContext, @PathParam("id") Long id) {
+        try {
+            enderecoService.deletarDoUsuario(securityContext.getUserPrincipal().getName(), id);
+            return Response.noContent().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
     }
 
     @PUT
