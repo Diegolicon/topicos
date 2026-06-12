@@ -15,6 +15,8 @@ INSERT INTO produtos (id, nome, descricao, preco, estoque, marca, TIPO_PRODUTO) 
   (4, 'Pistola GBB Compact', 'Pistola gas blow back', 899.90, 5, 'Strike', 'ARMA_AIRSOFT');
 
 INSERT INTO armas_airsoft (id, TIPO_PROPULSAO, MODELO, VELOCIDADE_ESCOPETA, ALCANCE_EFETIVO) VALUES
+  (1, 'AEG', 'M4A1 Carbine', 110.0, 40.0),
+  (2, 'Spring', 'Sniper M24', 140.0, 60.0),
   (3, 'AEG', 'Viper X9', 120.0, 45.0),
   (4, 'GBB', 'Strike P45', 95.0, 25.0);
 
