@@ -4,7 +4,10 @@ import Topicos.dto.ArmaAirsoftRequestDTO;
 import Topicos.dto.ArmaAirsoftResponseDTO;
 import Topicos.service.ArmaAirsoftService;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -22,6 +25,8 @@ public class ArmaAirsoftResource {
     ArmaAirsoftService armaAirsoftService;
 
     @POST
+    @Transactional
+    @RolesAllowed("ADMIN")
     public Response criar(@Valid ArmaAirsoftRequestDTO dto) {
         try {
             ArmaAirsoftResponseDTO response = armaAirsoftService.criar(dto);
@@ -33,6 +38,7 @@ public class ArmaAirsoftResource {
     }
 
     @GET
+    @PermitAll
     public Response obterTodos() {
         List<ArmaAirsoftResponseDTO> armas = armaAirsoftService.obterTodos();
         return Response.ok(armas).build();
@@ -40,6 +46,7 @@ public class ArmaAirsoftResource {
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public Response obterPorId(@PathParam("id") Long id) {
         try {
             ArmaAirsoftResponseDTO arma = armaAirsoftService.obterPorId(id);
@@ -52,6 +59,7 @@ public class ArmaAirsoftResource {
 
     @GET
     @Path("/buscar/nome")
+    @PermitAll
     public Response buscarPorNome(@QueryParam("nome") String nome) {
         List<ArmaAirsoftResponseDTO> armas = armaAirsoftService.buscarPorNome(nome);
         return Response.ok(armas).build();
@@ -59,6 +67,7 @@ public class ArmaAirsoftResource {
 
     @GET
     @Path("/buscar/modelo")
+    @PermitAll
     public Response buscarPorModelo(@QueryParam("modelo") String modelo) {
         List<ArmaAirsoftResponseDTO> armas = armaAirsoftService.buscarPorModelo(modelo);
         return Response.ok(armas).build();
@@ -66,6 +75,7 @@ public class ArmaAirsoftResource {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response atualizar(@PathParam("id") Long id, @Valid ArmaAirsoftRequestDTO dto) {
         try {
             ArmaAirsoftResponseDTO response = armaAirsoftService.atualizar(id, dto);
@@ -78,6 +88,8 @@ public class ArmaAirsoftResource {
 
     @DELETE
     @Path("/{id}")
+    @Transactional
+    @RolesAllowed("ADMIN")
     public Response deletar(@PathParam("id") Long id) {
         try {
             armaAirsoftService.deletar(id);

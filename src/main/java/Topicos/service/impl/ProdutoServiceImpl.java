@@ -2,16 +2,19 @@ package Topicos.service.impl;
 
 import Topicos.dto.ProdutoRequestDTO;
 import Topicos.dto.ProdutoResponseDTO;
+import Topicos.model.Endereco;
 import Topicos.model.Produto;
 import Topicos.repository.ProdutoRepository;
 import Topicos.service.ProdutoService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@Transactional
 public class ProdutoServiceImpl implements ProdutoService {
 
     @Inject
@@ -42,16 +45,16 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public ProdutoResponseDTO obterPorId(Long id) {
-        Produto produto = produtoRepository.findById(id);
-        if (produto == null) {
-            throw new EntityNotFoundException("Produto não encontrado com ID: " + id);
+        Produto entity = Produto.find("id = ?1 and ativo = true", id).firstResult();
+        if (entity == null) {
+            throw new EntityNotFoundException("Produto não encontrado ou inativo com ID: " + id);
         }
-        return toResponseDTO(produto);
+        return toResponseDTO(entity);
     }
 
     @Override
     public List<ProdutoResponseDTO> obterTodos() {
-        return produtoRepository.listAll().stream()
+        return produtoRepository.list("ativo", true).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -76,7 +79,8 @@ public class ProdutoServiceImpl implements ProdutoService {
         if (produto == null) {
             throw new EntityNotFoundException("Produto não encontrado com ID: " + id);
         }
-        produtoRepository.delete(produto);
+        produto.setAtivo(false);
+        produtoRepository.persist(produto);
     }
 
     private ProdutoResponseDTO toResponseDTO(Produto produto) {

@@ -6,6 +6,7 @@ import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
 import Topicos.service.EnderecoService;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -71,6 +72,7 @@ public class EnderecoResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response deletar(@PathParam("id") Long id) {
         try {
             enderecoService.deletar(id);

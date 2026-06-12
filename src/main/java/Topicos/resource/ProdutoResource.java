@@ -7,6 +7,7 @@ import Topicos.dto.ProdutoResponseDTO;
 import Topicos.service.ProdutoService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -31,6 +32,7 @@ public class ProdutoResource {
     ProdutoService produtoService;
 
     @POST
+    @RolesAllowed("ADMIN")
     public Response criar(@Valid ProdutoRequestDTO dto) {
         try {
             ProdutoResponseDTO response = produtoService.criar(dto);
@@ -79,6 +81,7 @@ public class ProdutoResource {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response atualizar(@PathParam("id") Long id, @Valid ProdutoRequestDTO dto) {
         try {
             ProdutoResponseDTO response = produtoService.atualizar(id, dto);
@@ -91,6 +94,7 @@ public class ProdutoResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response deletar(@PathParam("id") Long id) {
         try {
             produtoService.deletar(id);

@@ -10,7 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class EnderecoRepository implements PanacheRepository<Endereco> {
 
     public List<Endereco> findByCep(String cep) {
-        return find("cep like ?1", "%" + cep + "%").list();
+        return find("cep like ?1 and ativo = true", "%" + cep + "%").list();
     }
 }
 

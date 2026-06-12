@@ -8,10 +8,14 @@ import Topicos.service.ArmaAirsoftService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@Transactional
 public class ArmaAirsoftServiceImpl implements ArmaAirsoftService {
 
     @Inject
@@ -47,16 +51,17 @@ public class ArmaAirsoftServiceImpl implements ArmaAirsoftService {
 
     @Override
     public ArmaAirsoftResponseDTO obterPorId(Long id) {
-        ArmaAirsoft arma = armaAirsoftRepository.findById(id);
-        if (arma == null) {
-            throw new EntityNotFoundException("Arma Airsoft não encontrada com ID: " + id);
+        ArmaAirsoft entity = ArmaAirsoft.find("id = ?1 and ativo = true", id).firstResult();
+        
+        if (entity == null) {
+            throw new NotFoundException("Arma de Airsoft não encontrado ou inativo com ID: " + id);
         }
-        return toResponseDTO(arma);
+        return toResponseDTO(entity);
     }
-
+    
     @Override
     public List<ArmaAirsoftResponseDTO> obterTodos() {
-        return armaAirsoftRepository.listAll().stream()
+        return armaAirsoftRepository.list("ativo", true).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -81,7 +86,8 @@ public class ArmaAirsoftServiceImpl implements ArmaAirsoftService {
         if (arma == null) {
             throw new EntityNotFoundException("Arma Airsoft não encontrada com ID: " + id);
         }
-        armaAirsoftRepository.delete(arma);
+        arma.setAtivo(false);
+        armaAirsoftRepository.persist(arma);
     }
 
     private ArmaAirsoftResponseDTO toResponseDTO(ArmaAirsoft arma) {

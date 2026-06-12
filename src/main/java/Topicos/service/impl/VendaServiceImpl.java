@@ -7,6 +7,7 @@ import Topicos.dto.ItemVendaResponseDTO;
 import Topicos.dto.VendaRequestDTO;
 import Topicos.dto.VendaResponseDTO;
 import Topicos.model.Usuario;
+import Topicos.model.ArmaAirsoft;
 import Topicos.model.ItemVenda;
 import Topicos.model.Produto;
 import Topicos.model.Venda;
@@ -17,10 +18,12 @@ import Topicos.service.VendaService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@Transactional
 public class VendaServiceImpl implements VendaService {
 
     @Inject
@@ -80,16 +83,16 @@ public class VendaServiceImpl implements VendaService {
 
     @Override
     public VendaResponseDTO obterPorId(Long id) {
-        Venda venda = vendaRepository.findById(id);
-        if (venda == null) {
+        Venda entity = Venda.find("id = ?1 and ativo = true", id).firstResult();
+        if (entity == null) {
             throw new EntityNotFoundException("Venda não encontrada com ID: " + id);
         }
-        return toResponseDTO(venda);
+        return toResponseDTO(entity);
     }
 
     @Override
     public List<VendaResponseDTO> obterTodos() {
-        return vendaRepository.listAll().stream()
+        return vendaRepository.list("ativo", true).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -125,7 +128,8 @@ public class VendaServiceImpl implements VendaService {
         if (venda == null) {
             throw new EntityNotFoundException("Venda não encontrada com ID: " + id);
         }
-        vendaRepository.delete(venda);
+        venda.setAtivo(false);
+        vendaRepository.persist(venda);
     }
 
     private VendaResponseDTO toResponseDTO(Venda venda) {

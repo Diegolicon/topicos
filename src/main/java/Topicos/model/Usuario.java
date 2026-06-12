@@ -1,5 +1,7 @@
 package Topicos.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +26,9 @@ public class Usuario extends DefaultEntity {
     @Column(nullable = false)
     private String senha;
 
+    @Column(nullable = false, length = 20)
+    private String role = "USER";
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
@@ -37,6 +42,16 @@ public class Usuario extends DefaultEntity {
         this.telefone = telefone;
         this.senha = senha;
         this.endereco = endereco;
+        this.role = "USER";
+    }
+
+    public Usuario(String nome, String email, String telefone, String senha, Endereco endereco, String role) {
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.senha = senha;
+        this.endereco = endereco;
+        this.role = role != null ? role : "USER";
     }
 
     // Getters e Setters
@@ -72,11 +87,29 @@ public class Usuario extends DefaultEntity {
         this.senha = senha;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role != null ? role : "USER";
+    }
+
     public Endereco getEndereco() {
         return endereco;
     }
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public void setTokenRecuperacao(String token) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setTokenRecuperacao'");
+    }
+
+    public void setDataExpiracaoToken(LocalDateTime plusMinutes) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDataExpiracaoToken'");
     }
 }

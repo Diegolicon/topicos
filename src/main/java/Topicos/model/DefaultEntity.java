@@ -11,6 +11,9 @@ public abstract class DefaultEntity extends PanacheEntity {
     @Column(name = "atualizado_em")
     private Long atualizadoEm;
 
+    @Column(nullable = false)
+    private Boolean ativo = true;
+
     @PrePersist
     public void prePersist() {
         this.criadoEm = System.currentTimeMillis();
@@ -36,6 +39,14 @@ public abstract class DefaultEntity extends PanacheEntity {
 
     public void setAtualizadoEm(Long atualizadoEm) {
         this.atualizadoEm = atualizadoEm;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }
 

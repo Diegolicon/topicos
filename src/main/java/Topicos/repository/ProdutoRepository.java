@@ -10,15 +10,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class ProdutoRepository implements PanacheRepository<Produto> {
 
     public List<Produto> findByNome(String nome) {
-        return find("nome like ?1", "%" + nome + "%").list();
+        return find("nome like ?1 and ativo = true", "%" + nome + "%").list();
     }
 
     public List<Produto> findByMarca(String marca) {
-        return find("marca", marca).list();
+        return find("marca = ?1 and ativo = true", marca).list();
     }
 
     public List<Produto> findComEstoque() {
-        return find("estoque > 0").list();
+        return find("estoque > 0 and ativo = true").list();
     }
 }
 

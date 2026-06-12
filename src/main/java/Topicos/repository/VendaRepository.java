@@ -10,11 +10,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class VendaRepository implements PanacheRepository<Venda> {
 
     public List<Venda> findByUsuario(Long usuarioId) {
-        return find("usuario.id", usuarioId).list();
+        return find("usuario.id = ?1 and ativo = true", usuarioId).list();
     }
 
     public List<Venda> findByStatus(Venda.StatusVenda status) {
-        return find("status", status).list();
+        return find("status = ?1 and ativo = true", status).list();
     }
 }
 

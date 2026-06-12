@@ -7,7 +7,9 @@ import Topicos.dto.UsuarioResponseDTO;
 import Topicos.service.UsuarioService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -43,6 +45,7 @@ public class UsuarioResource {
     }
 
     @GET
+    @RolesAllowed("ADMIN")
     public Response obterTodos() {
         List<UsuarioResponseDTO> usuarios = usuarioService.obterTodos();
         return Response.ok(usuarios).build();
@@ -50,6 +53,7 @@ public class UsuarioResource {
 
     @GET
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response obterPorId(@PathParam("id") Long id) {
         try {
             UsuarioResponseDTO usuario = usuarioService.obterPorId(id);
@@ -62,6 +66,7 @@ public class UsuarioResource {
 
     @GET
     @Path("/buscar/nome")
+    @RolesAllowed("ADMIN")
     public Response buscarPorNome(@QueryParam("nome") String nome) {
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarPorNome(nome);
         return Response.ok(usuarios).build();
@@ -69,6 +74,7 @@ public class UsuarioResource {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response atualizar(@PathParam("id") Long id, @Valid UsuarioRequestDTO dto) {
         try {
             UsuarioResponseDTO response = usuarioService.atualizar(id, dto);
@@ -81,6 +87,7 @@ public class UsuarioResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("ADMIN")
     public Response deletar(@PathParam("id") Long id) {
         try {
             usuarioService.deletar(id);
@@ -93,6 +100,7 @@ public class UsuarioResource {
 
     @PUT
     @Path("/{id}/alterar-senha")
+    @Authenticated
     public Response alterarSenha(@PathParam("id") Long id, 
             @QueryParam("senhaAtual") String senhaAtual,
             @QueryParam("novaSenha") String novaSenha) {
@@ -120,7 +128,7 @@ public class UsuarioResource {
     }
 
     @POST
-    @Path("/recuperar-senha")
+    @Path("/alterar-senha")
     @PermitAll
     public Response recuperarSenha(@QueryParam("token") String token, @QueryParam("novaSenha") String novaSenha) {
         try {

@@ -8,6 +8,7 @@ import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
 import Topicos.dto.UsuarioRequestDTO;
 import Topicos.dto.UsuarioResponseDTO;
+import Topicos.model.ArmaAirsoft;
 import Topicos.model.Endereco;
 import Topicos.model.Usuario;
 import Topicos.repository.UsuarioRepository;
@@ -16,6 +17,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 @Transactional
@@ -26,7 +28,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO criar(UsuarioRequestDTO dto) {
-        Usuario usuario = new Usuario(dto.getNome(), dto.getEmail(), dto.getTelefone(), dto.getSenha(), toEndereco(dto.getEndereco()));
+        Usuario usuario = new Usuario(
+                dto.getNome(),
+                dto.getEmail(),
+                dto.getTelefone(),
+                dto.getSenha(),
+                toEndereco(dto.getEndereco()),
+                "USER"
+        );
         usuarioRepository.persist(usuario);
         return toResponseDTO(usuario);
     }
@@ -49,16 +58,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO obterPorId(Long id) {
-        Usuario usuario = usuarioRepository.findById(id);
-        if (usuario == null) {
-            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+        Usuario entity = Usuario.find("id = ?1 and ativo = true", id).firstResult();
+        if (entity == null) {
+            throw new NotFoundException("Usuário não encontrado ou inativo com ID: " + id);
         }
-        return toResponseDTO(usuario);
+        return toResponseDTO(entity);
     }
 
     @Override
     public List<UsuarioResponseDTO> obterTodos() {
-        return usuarioRepository.listAll().stream()
+        return usuarioRepository.list("ativo", true).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -76,7 +85,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (usuario == null) {
             throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
         }
-        usuarioRepository.delete(usuario);
+        usuario.setAtivo(false);
+        usuarioRepository.persist(usuario);
     }
 
     @Override

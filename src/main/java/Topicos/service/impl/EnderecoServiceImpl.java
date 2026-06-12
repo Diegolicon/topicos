@@ -5,14 +5,17 @@ import java.util.stream.Collectors;
 
 import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
+import Topicos.model.ArmaAirsoft;
 import Topicos.model.Endereco;
 import Topicos.repository.EnderecoRepository;
 import Topicos.service.EnderecoService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
+@Transactional
 public class EnderecoServiceImpl implements EnderecoService {
 
     @Inject
@@ -50,16 +53,16 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     public EnderecoResponseDTO obterPorId(Long id) {
-        Endereco endereco = enderecoRepository.findById(id);
-        if (endereco == null) {
-            throw new EntityNotFoundException("Endereço não encontrado com ID: " + id);
+        Endereco entity = Endereco.find("id = ?1 and ativo = true", id).firstResult();
+        if (entity == null) {
+            throw new EntityNotFoundException("Endereço não encontrado ou inativo com ID: " + id);
         }
-        return toResponseDTO(endereco);
+        return toResponseDTO(entity);
     }
 
     @Override
     public List<EnderecoResponseDTO> obterTodos() {
-        return enderecoRepository.listAll().stream()
+        return enderecoRepository.list("ativo", true).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -77,7 +80,8 @@ public class EnderecoServiceImpl implements EnderecoService {
         if (endereco == null) {
             throw new EntityNotFoundException("Endereço não encontrado com ID: " + id);
         }
-        enderecoRepository.delete(endereco);
+        endereco.setAtivo(false);
+        enderecoRepository.persist(endereco);
     }
 
     private EnderecoResponseDTO toResponseDTO(Endereco endereco) {

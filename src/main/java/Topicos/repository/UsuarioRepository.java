@@ -10,11 +10,11 @@ import java.util.Optional;
 public class UsuarioRepository implements PanacheRepository<Usuario> {
 
     public Optional<Usuario> findByEmail(String email) {
-        return find("email", email).firstResultOptional();
+        return find("email = ?1 and ativo = true", email).firstResultOptional();
     }
 
     public List<Usuario> findByNome(String nome) {
-        return find("nome like ?1", "%" + nome + "%").list();
+        return find("nome like ?1 and ativo = true", "%" + nome + "%").list();
     }
 }
 
