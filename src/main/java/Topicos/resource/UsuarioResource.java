@@ -2,6 +2,9 @@ package Topicos.resource;
 
 import java.util.List;
 
+import Topicos.dto.AlterarSenhaRequestDTO;
+import Topicos.dto.EsqueceuSenhaRequestDTO;
+import Topicos.dto.RecuperarSenhaRequestDTO;
 import Topicos.dto.UsuarioRequestDTO;
 import Topicos.dto.UsuarioResponseDTO;
 import Topicos.service.UsuarioService;
@@ -9,7 +12,6 @@ import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -101,12 +103,14 @@ public class UsuarioResource {
     @PUT
     @Path("/{id}/alterar-senha")
     @Authenticated
-    public Response alterarSenha(@PathParam("id") Long id, 
+    public Response alterarSenha(@PathParam("id") Long id,
             @QueryParam("senhaAtual") String senhaAtual,
-            @QueryParam("novaSenha") String novaSenha) {
+            @QueryParam("novaSenha") String novaSenha,
+            AlterarSenhaRequestDTO dto) {
         try {
-            // Validar se o usuário está tentando alterar sua própria senha
-            UsuarioResponseDTO response = usuarioService.alterarSenha(id, senhaAtual, novaSenha);
+            String senhaAtualFinal = dto != null && dto.getSenhaAtual() != null ? dto.getSenhaAtual() : senhaAtual;
+            String novaSenhaFinal = dto != null && dto.getNovaSenha() != null ? dto.getNovaSenha() : novaSenha;
+            UsuarioResponseDTO response = usuarioService.alterarSenha(id, senhaAtualFinal, novaSenhaFinal);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -117,10 +121,11 @@ public class UsuarioResource {
     @POST
     @Path("/esqueceu-senha")
     @PermitAll
-    public Response esqueceuSenha(@QueryParam("email") String email) {
+    public Response esqueceuSenha(@QueryParam("email") String email, EsqueceuSenhaRequestDTO dto) {
         try {
-            usuarioService.enviarRecuperacaoSenha(email);
-            return Response.ok(new ErrorResponse("Email de recuperação enviado")).build();
+            String emailFinal = dto != null && dto.getEmail() != null ? dto.getEmail() : email;
+            usuarioService.enviarRecuperacaoSenha(emailFinal);
+            return Response.ok(new ErrorResponse("Email de recuperacao enviado")).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse(e.getMessage())).build();
@@ -130,9 +135,13 @@ public class UsuarioResource {
     @POST
     @Path("/alterar-senha")
     @PermitAll
-    public Response recuperarSenha(@QueryParam("token") String token, @QueryParam("novaSenha") String novaSenha) {
+    public Response recuperarSenha(@QueryParam("token") String token,
+            @QueryParam("novaSenha") String novaSenha,
+            RecuperarSenhaRequestDTO dto) {
         try {
-            usuarioService.recuperarSenha(token, novaSenha);
+            String tokenFinal = dto != null && dto.getToken() != null ? dto.getToken() : token;
+            String novaSenhaFinal = dto != null && dto.getNovaSenha() != null ? dto.getNovaSenha() : novaSenha;
+            usuarioService.recuperarSenha(tokenFinal, novaSenhaFinal);
             return Response.ok(new ErrorResponse("Senha alterada com sucesso")).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -156,4 +165,3 @@ public class UsuarioResource {
         }
     }
 }
-

@@ -12,7 +12,7 @@ public interface UsuarioService {
     List<UsuarioResponseDTO> buscarPorNome(String nome);
     void deletar(Long id);
     UsuarioResponseDTO alterarSenha(Long id, String senhaAtual, String novaSenha);
-    void enviarRecuperacaoSenha(String email);
+    String enviarRecuperacaoSenha(String email);
     void recuperarSenha(String token, String novaSenha);
 }
 

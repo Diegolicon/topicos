@@ -33,6 +33,10 @@ public class Usuario extends DefaultEntity {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
+    private String tokenRecuperacao;
+
+    private LocalDateTime dataExpiracaoToken;
+
     public Usuario() {
     }
 
@@ -52,6 +56,22 @@ public class Usuario extends DefaultEntity {
         this.senha = senha;
         this.endereco = endereco;
         this.role = role != null ? role : "USER";
+    }
+
+    public String getTokenRecuperacao() {
+        return tokenRecuperacao;
+    }
+
+    public void setTokenRecuperacao(String tokenRecuperacao) {
+        this.tokenRecuperacao = tokenRecuperacao;
+    }
+
+    public LocalDateTime getDataExpiracaoToken() {
+        return dataExpiracaoToken;
+    }
+
+    public void setDataExpiracaoToken(LocalDateTime dataExpiracaoToken) {
+        this.dataExpiracaoToken = dataExpiracaoToken;
     }
 
     // Getters e Setters
@@ -103,13 +123,4 @@ public class Usuario extends DefaultEntity {
         this.endereco = endereco;
     }
 
-    public void setTokenRecuperacao(String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTokenRecuperacao'");
-    }
-
-    public void setDataExpiracaoToken(LocalDateTime plusMinutes) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDataExpiracaoToken'");
-    }
 }

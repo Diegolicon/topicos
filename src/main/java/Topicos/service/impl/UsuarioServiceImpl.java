@@ -1,22 +1,25 @@
 package Topicos.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import Topicos.dto.EnderecoRequestDTO;
 import Topicos.dto.EnderecoResponseDTO;
 import Topicos.dto.UsuarioRequestDTO;
 import Topicos.dto.UsuarioResponseDTO;
-import Topicos.model.ArmaAirsoft;
 import Topicos.model.Endereco;
 import Topicos.model.Usuario;
 import Topicos.repository.UsuarioRepository;
 import Topicos.service.UsuarioService;
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
@@ -25,6 +28,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Inject
     UsuarioRepository usuarioRepository;
+
+    @Inject
+    Mailer mailer;
 
     @Override
     public UsuarioResponseDTO criar(UsuarioRequestDTO dto) {
@@ -44,7 +50,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
         Usuario usuario = usuarioRepository.findById(id);
         if (usuario == null) {
-            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+            throw new EntityNotFoundException("Usuario nao encontrado com ID: " + id);
         }
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
@@ -60,7 +66,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO obterPorId(Long id) {
         Usuario entity = Usuario.find("id = ?1 and ativo = true", id).firstResult();
         if (entity == null) {
-            throw new NotFoundException("Usuário não encontrado ou inativo com ID: " + id);
+            throw new NotFoundException("Usuario nao encontrado ou inativo com ID: " + id);
         }
         return toResponseDTO(entity);
     }
@@ -83,7 +89,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void deletar(Long id) {
         Usuario usuario = usuarioRepository.findById(id);
         if (usuario == null) {
-            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+            throw new EntityNotFoundException("Usuario nao encontrado com ID: " + id);
         }
         usuario.setAtivo(false);
         usuarioRepository.persist(usuario);
@@ -93,46 +99,79 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO alterarSenha(Long id, String senhaAtual, String novaSenha) {
         Usuario usuario = usuarioRepository.findById(id);
         if (usuario == null) {
-            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+            throw new EntityNotFoundException("Usuario nao encontrado com ID: " + id);
         }
-        
-        // Validar senha atual (em produção, usar BCrypt ou similar)
-        if (!usuario.getSenha().equals(senhaAtual)) {
-            throw new RuntimeException("Senha atual incorreta");
+
+        if (senhaAtual == null || senhaAtual.trim().isEmpty()) {
+            throw new BadRequestException("Senha atual e obrigatoria");
         }
-        
+
         if (novaSenha == null || novaSenha.trim().isEmpty()) {
-            throw new RuntimeException("Nova senha não pode estar vazia");
+            throw new BadRequestException("Nova senha nao pode estar vazia");
         }
-        
-        usuario.setSenha(novaSenha);
+
+        if (!usuario.getSenha().equals(senhaAtual)) {
+            throw new BadRequestException("Senha atual incorreta");
+        }
+
+        usuario.setSenha(novaSenha.trim());
         usuarioRepository.persist(usuario);
         return toResponseDTO(usuario);
     }
 
     @Override
-    public void enviarRecuperacaoSenha(String email) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        if (usuarioOpt.isEmpty()) {
-            // Por segurança, não informar se o email existe ou não
-            throw new RuntimeException("Email não encontrado ou inválido");
+    public String enviarRecuperacaoSenha(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new BadRequestException("Email e obrigatorio");
         }
-        
-        // Implementar lógica para enviar email com token
-        // Exemplo: gerar token, salvar em banco/cache com expiração, enviar email
-        System.out.println("Email de recuperação enviado para: " + email);
+
+        String emailLimpo = email.trim();
+        Usuario usuario = Usuario.find("email", emailLimpo).firstResult();
+        if (usuario == null) {
+            throw new NotFoundException("Usuario nao encontrado.");
+        }
+
+        String token = UUID.randomUUID().toString();
+        usuario.setTokenRecuperacao(token);
+        usuario.setDataExpiracaoToken(LocalDateTime.now().plusMinutes(15));
+        usuarioRepository.persist(usuario);
+
+        String link = "http://localhost:8080/api/usuarios/alterar-senha?token=" + token;
+        String mensagem = "Use este token para recuperar sua senha: " + token
+                + "\n\nEnvie uma requisicao POST para " + link
+                + " informando a novaSenha.";
+
+        mailer.send(Mail.withText(emailLimpo, "Recuperacao de Senha", mensagem));
+        return token;
     }
 
     @Override
     public void recuperarSenha(String token, String novaSenha) {
-        // Implementar lógica para validar token e recuperar usuário
-        // Exemplo: buscar token no cache/banco, validar expiração, buscar usuário
         if (novaSenha == null || novaSenha.trim().isEmpty()) {
-            throw new RuntimeException("Nova senha não pode estar vazia");
+            throw new BadRequestException("Nova senha nao pode estar vazia");
         }
-        
-        // Placeholder - substituir com lógica real
-        throw new RuntimeException("Token inválido ou expirado");
+
+        if (token == null || token.trim().isEmpty()) {
+            throw new BadRequestException("Token de recuperacao e obrigatorio");
+        }
+
+        Usuario usuario = Usuario.find("tokenRecuperacao = ?1", token.trim()).firstResult();
+        if (usuario == null) {
+            throw new BadRequestException("Token invalido ou nao encontrado");
+        }
+
+        if (usuario.getDataExpiracaoToken() == null
+                || usuario.getDataExpiracaoToken().isBefore(LocalDateTime.now())) {
+            usuario.setTokenRecuperacao(null);
+            usuario.setDataExpiracaoToken(null);
+            usuarioRepository.persist(usuario);
+            throw new BadRequestException("Este token de recuperacao ja expirou");
+        }
+
+        usuario.setSenha(novaSenha.trim());
+        usuario.setTokenRecuperacao(null);
+        usuario.setDataExpiracaoToken(null);
+        usuarioRepository.persist(usuario);
     }
 
     private UsuarioResponseDTO toResponseDTO(Usuario usuario) {
@@ -178,4 +217,3 @@ public class UsuarioServiceImpl implements UsuarioService {
         );
     }
 }
-
